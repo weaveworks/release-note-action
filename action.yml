@@ -1,0 +1,15 @@
+name: 'Release Note'
+author: 'Weaveworks'
+description: 'Checks for a release-note code block.'
+inputs: 
+  GITHUB_TOKEN:
+    description: 'The GITHUB_TOKEN secret'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.GITHUB_TOKEN }}
+branding:
+  icon: 'file-text'
+  color: 'orange'
