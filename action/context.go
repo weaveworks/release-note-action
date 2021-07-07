@@ -8,7 +8,7 @@ import (
 	"github.com/caarlos0/env"
 )
 
-// Context represents the trigger event context
+// Context represents the trigger event context.
 type Context struct {
 	Repository string `json:"repo" env:"GITHUB_REPOSITORY"`
 	SHA        string `json:"sha" env:"GITHUB_SHA"`
@@ -27,7 +27,7 @@ type Context struct {
 	EventPath  string `env:"GITHUB_EVENT_PATH"`
 }
 
-// NewContextFromEnv creates a new context from environment variables
+// NewContextFromEnv creates a new context from environment variables.
 func NewContextFromEnv() (*Context, error) {
 	ghContext := &Context{}
 	if err := env.Parse(ghContext); err != nil {

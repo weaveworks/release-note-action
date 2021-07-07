@@ -25,3 +25,5 @@ linters:
     - gochecknoglobals
     - gochecknoinits
     - wsl
+    - tagliatelle
+    - exhaustivestruct

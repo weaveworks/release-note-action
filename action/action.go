@@ -4,20 +4,20 @@ import (
 	"regexp"
 )
 
-// ReleaseNoteAction represents the interface for a action to check for a release note
+// ReleaseNoteAction represents the interface for a action to check for a release note.
 type ReleaseNoteAction interface {
 	ReleaseNoteExists(ctx *Context) (bool, error)
 }
 
-// New creates a new instance of the release note action
+// New creates a new instance of the release note action.
 func New() ReleaseNoteAction {
 	return &action{}
 }
 
-// action contains the implementation of the release note action
+// action contains the implementation of the release note action.
 type action struct{}
 
-// ReleaseNoteExists will process a GitHub Actions event to see if a release note exists
+// ReleaseNoteExists will process a GitHub Actions event to see if a release note exists.
 func (a *action) ReleaseNoteExists(ctx *Context) (bool, error) {
 	LogDebug("checking for existence of release note")
 

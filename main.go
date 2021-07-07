@@ -14,7 +14,7 @@ func main() {
 	a := action.New()
 	exists, err := a.ReleaseNoteExists(ctx)
 	if err != nil {
-		action.LogErrorAndExit("failed checking for release note", "error", err.Error())
+		action.LogErrorAndExit("failed checking for release note: %s", err.Error())
 	}
 
 	if exists {
