@@ -1,0 +1,13 @@
+name: releasenote
+
+on: [pull_request]
+
+jobs:
+  labeler:
+    runs-on: ubuntu-latest
+    name: Check for release note
+    steps:
+      - uses: actions/checkout@v1
+      - uses: ./
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
