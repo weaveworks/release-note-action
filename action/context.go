@@ -8,6 +8,7 @@ import (
 	"github.com/caarlos0/env"
 )
 
+// Context represents the trigger event context
 type Context struct {
 	Repository string `json:"repo" env:"GITHUB_REPOSITORY"`
 	SHA        string `json:"sha" env:"GITHUB_SHA"`
@@ -19,13 +20,14 @@ type Context struct {
 	Job        string `json:"job" env:"GITHUB_JOB"`
 	RunNumber  int    `json:"runNumber" env:"GITHUB_RUN_NUMBER"`
 	RunID      int    `json:"runID" env:"GITHUB_RUN_ID"`
-	ApiURL     string `json:"apiUrl" env:"GITHUB_API_URL" envDefault:"ttps://api.github.com"`
+	APIURL     string `json:"apiUrl" env:"GITHUB_API_URL" envDefault:"ttps://api.github.com"`
 	ServerURL  string `json:"serverUrl" env:"GITHUB_SERVER_URL" envDefault:"https://github.com"`
 	GraphQLUrl string `json:"graphqlUrl" env:"GITHUB_GRAPHQL_URL " envDefault:"https://api.github.com/graphql"`
 	Event      *Event `json:"payload"`
 	EventPath  string `env:"GITHUB_EVENT_PATH"`
 }
 
+// NewContextFromEnv creates a new context from environment variables
 func NewContextFromEnv() (*Context, error) {
 	ghContext := &Context{}
 	if err := env.Parse(ghContext); err != nil {
@@ -34,7 +36,6 @@ func NewContextFromEnv() (*Context, error) {
 	if err := payloadFromFile(ghContext); err != nil {
 		return nil, fmt.Errorf("loading event from file: %w", err)
 	}
-	//TODO: handle INPUTS
 
 	return ghContext, nil
 }
@@ -51,7 +52,7 @@ func payloadFromFile(ghCtx *Context) error {
 
 	evt := &Event{}
 	if err := json.Unmarshal(data, evt); err != nil {
-		return fmt.Errorf("getting event file: %w", err)
+		return fmt.Errorf("unmarshalling event file: %w", err)
 	}
 	ghCtx.Event = evt
 

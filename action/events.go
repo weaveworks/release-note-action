@@ -2,6 +2,7 @@ package action
 
 import "time"
 
+// Event represents the GitHub Actions event trigger
 type Event struct {
 	Action string `json:"action"`
 	After  string `json:"after"`
@@ -19,9 +20,8 @@ type PullRequest struct {
 	Commits      int       `json:"commits"`
 	CreatedAt    time.Time `json:"created_at"`
 	Draft        bool      `json:"draft"`
-	HtmlURL      string    `json:"html_url"`
+	HTMLURL      string    `json:"html_url"`
 	ID           int       `json:"id"`
-	//Labels       []string  `json:"labels,omitempty"`
-	Number int    `json:"number"`
-	Title  string `json:"title"`
+	Number       int       `json:"number"`
+	Title        string    `json:"title"`
 }

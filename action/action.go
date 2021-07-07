@@ -1,38 +1,37 @@
 package action
 
-import "fmt"
+import (
+	"regexp"
+)
 
-type ActionFunc = func(ctx *Context) error
-
-type Action interface {
-	Do() error
+// ReleaseNoteAction represents the interface for a action to check for a release note
+type ReleaseNoteAction interface {
+	ReleaseNoteExists(ctx *Context) (bool, error)
 }
 
-func New(f ActionFunc) (Action, error) {
-	if f == nil {
-		return nil, FuncRequired
-	}
-
-	ctx, err := NewContextFromEnv()
-	if err != nil {
-		return nil, fmt.Errorf("creating context: %w", err)
-	}
-
-	return &actionImpl{
-		ctx:       ctx,
-		actionFun: f,
-	}, nil
+// New creates a new instance of the release note action
+func New() ReleaseNoteAction {
+	return &action{}
 }
 
-type actionImpl struct {
-	ctx       *Context
-	actionFun ActionFunc
-}
+// action contains the implementation of the release note action
+type action struct{}
 
-func (a *actionImpl) Do() error {
-	if err := a.actionFun(a.ctx); err != nil {
-		return fmt.Errorf("executing action function: %w", err)
+// ReleaseNoteExists will process a GitHub Actions event to see if a release note exists
+func (a *action) ReleaseNoteExists(ctx *Context) (bool, error) {
+	LogDebug("checking for existence of release note")
+
+	pr := ctx.Event.PullRequest
+	if pr == nil {
+		return false, ErrPullRequestEventRequired
 	}
 
-	return nil
+	//nolint: lll
+	re := regexp.MustCompile(`(?s)(?:Release note\*\*:\s*(?:<!--[^<>]*-->\s*)?` + "```(?:release-note)?|```release-note)(.+?)```")
+	potentialMatch := re.FindStringSubmatch(pr.Body)
+	if potentialMatch == nil {
+		return false, nil
+	}
+
+	return true, nil
 }

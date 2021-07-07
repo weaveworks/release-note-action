@@ -1,42 +1,25 @@
 package main
 
 import (
-	"errors"
-	"fmt"
-	"os"
-	"regexp"
-
 	"github.com/weaveworks/release-note-action/action"
 )
 
 func main() {
-	a, err := action.New(releaseNotAction)
+	action.Log("running release note action")
+	ctx, err := action.NewContextFromEnv()
 	if err != nil {
-		fmt.Fprintln(os.Stdout, "failed to create action: %w", err)
-		os.Exit(1)
+		action.LogErrorAndExit("failed to create action context: %s", err.Error())
 	}
 
-	if err := a.Do(); err != nil {
-		fmt.Printf("action failed: %s\n", err.Error())
-		os.Exit(1)
-	}
-}
-
-func releaseNotAction(ctx *action.Context) error {
-	fmt.Println("Running release note action")
-
-	pr := ctx.Event.PullRequest
-	if pr == nil {
-		return errors.New("no pull request event data")
+	a := action.New()
+	exists, err := a.ReleaseNoteExists(ctx)
+	if err != nil {
+		action.LogErrorAndExit("failed checking for release note", "error", err.Error())
 	}
 
-	re := regexp.MustCompile(`(?s)(?:Release note\*\*:\s*(?:<!--[^<>]*-->\s*)?` + "```(?:release-note)?|```release-note)(.+?)```")
-	potentialMatch := re.FindStringSubmatch(pr.Body)
-	if potentialMatch == nil {
-		return errors.New("no release-note code block found")
+	if exists {
+		action.Log("release-note code block found")
 	} else {
-		fmt.Fprintln(os.Stdout, "release note found")
+		action.LogErrorAndExit("release not not found. Add a release-note code block to your PR description")
 	}
-
-	return nil
 }

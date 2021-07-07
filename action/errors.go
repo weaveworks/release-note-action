@@ -3,5 +3,6 @@ package action
 import "errors"
 
 var (
-	FuncRequired = errors.New("action func is required")
+	ErrPullRequestEventRequired = errors.New("a pull request event is required")
+	ErrNoReleaseNoteFound       = errors.New("no release-note code block found")
 )
